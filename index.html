@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileDDPreviewHTML</title>
+</head>
+
+<style>
+file-dd {
+  display: grid;
+  grid: auto-flow;
+  width: fit-content;
+  justify-content: space-between;
+  background-color:lightgray;
+  text-align: left;
+  padding: 0.2em 0.2em 0.2em 0.2em;
+  border-radius: 4px;
+  /* border-color: #ff0000; */
+  /* border: solid; */
+}
+
+/* #preview1, #preview2, #preview3 { */
+.preview {
+  width: 320px;
+
+  display: grid;
+  grid: auto-flow;
+  justify-content: space-between;
+  /* background-color: #00ffcc; */
+  text-align: left;
+  padding: 0.2em 0.2em 0.2em 0.2em;
+  border-radius: 4px;
+  /* border: #ff0000; */
+}
+
+#filedd1::part(file-button), #filedd2::part(file-button) {
+  font-size: 20px;
+}
+
+#filedd2::part(file-button)::file-selector-button {
+  font-weight: bold;
+  color: white;
+  background: blue;
+  font-size: 20px;
+  border: 0;
+  border-radius: 10em;
+  padding: 8px 16px;
+  text-align: center;
+}
+</style>
+
+<body>
+  <h1>FileDD/file-dd</h1>
+  <h3>Custom Element for Image File Selection<br>
+画像ファイル選択カスタム要素
+</h3>
+
+  <form action="some/uploader" method="post" enctype="multipart/form-data">
+    <div id="content">
+      <div>
+        Select an image file or drop it into the file selection area.<br />
+        (画像ファイルを選択するか、ファイル選択エリアにファイルをドロップしてください)
+      </div>
+      <div>
+        <file-dd accept="image/png, image/jpeg" img-id="preview1" name="imagefile"></file-dd>
+        <file-dd id="filedd1" accept="image/png, image/jpeg" img-id="preview2" name="imagefile1"></file-dd>
+        <file-dd id="filedd2" accept="image/*" img-id="preview3" name="imagefile2"></file-dd>
+      </div>
+    </div>
+
+    <div>
+      <h3>preview</h3>
+      <img id="preview1" class="preview"></img>
+      <img id="preview2" class="preview"></img>
+      <img id="preview3" class="preview"></img>
+    </div>
+
+    <hr>
+    <input type="submit" value="confirm" />
+  </form>
+
+</body>
+
+<script src="./FileDD.js"></script>
+
+</html>

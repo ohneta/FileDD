@@ -22,7 +22,7 @@ By specifying the `id` of an `img` element for preview, the selected image file 
 
 ## 書式 (Syntax)
 ```html
-\<file-dd>\</file-dd>
+<file-dd></file-dd>
 ```
 
 ### Attributes　(属性)

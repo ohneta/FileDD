@@ -28,15 +28,13 @@ class FileDD extends HTMLElement {
   fileInputElement = null;
   imgId = null;
   imgElement = null;
-
+  imgSrcDefault = null;   // 起動時にimg-idに設定されている画像情報
 
   constructor() {
     super();
   }
 
   connectedCallback() {
-// console.log("--");
-// console.log("connectedCallback()");
     if (this.hasAttribute('name')) {
       if (this.fileInputElement != null) {
         this.fileInputElement.name = this.getAttribute('name');
@@ -53,23 +51,17 @@ class FileDD extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-// console.log("--");
-// console.log("attributeChangedCallback()");
-// console.log(`name = ${name}`);
-// console.log(`oldValue = ${oldValue}`);
-// console.log(`newValue = ${newValue}`);
     if (name == 'accept') {
       this.accept = newValue;
     }
     if (name == 'img-id') {
       this.imgId = newValue;
+      this.imgSrcDefault = document.getElementById(this.imgId).src;
     }
     if (name === 'name') {
       if (this.fileInputElement != null)
         this.fileInputElement.name = newValue;
     }
-
-//    this._updateRendering();
   }
 
 
@@ -80,7 +72,6 @@ class FileDD extends HTMLElement {
     this.setAttribute("accept", v);
   }
 
-  // `name` 属性を取得/設定
   get name() {
     return this.getAttribute('name');
   }
@@ -100,12 +91,8 @@ class FileDD extends HTMLElement {
 
   _updateRendering() {
     // LightDOMにあるプレビュー用のimgタグをidで取得しておく
-    let documentImgElement = null;
     if (this.imgId != null) {
-      documentImgElement = document.getElementById(this.imgId);
-      if (documentImgElement != null) {
-        this.imgElement = documentImgElement;
-      }
+      this.imgElement = document.getElementById(this.imgId);
     }
 
     if (this.shadowRoot == null)
@@ -174,7 +161,7 @@ class FileDD extends HTMLElement {
         this.fileInputElement.files = dataTransfer.files;
         this.internals.setFormValue(this.fileInputElement.files.item(0));
         if (this.imgElement != null) {
-          this._previewImage(this.imgElement, dropFiles[0]);
+         this._previewImage(this.imgElement, dropFiles[0]);
         }
       } else {
         console.log("dropped files not accepted");
@@ -182,12 +169,18 @@ class FileDD extends HTMLElement {
 
     });
 
+    //--------
     {
       this.fileInputElement.type = 'file';
       this.fileInputElement.accept = this.accept;
       this.fileInputElement.addEventListener('change', (event) => {
+
+        if (this.fileInputElement.files.length === 0) {
+          console.log('canceled file select');
+        }
+
         this.internals.setFormValue(this.fileInputElement.files.item(0));
-        this._previewImage(this.imgElement, event.target.files[0]);
+       this._previewImage(this.imgElement, event.target.files[0]);
       });
     }
 
@@ -212,10 +205,15 @@ class FileDD extends HTMLElement {
    * @return {void}
    */
   _previewImage(imgElement, file) {
-    imgElement.src = window.URL.createObjectURL(file);
-    imgElement.onload = () => {
-      URL.revokeObjectURL(imgElement.src);
-    };
+    if ((file === undefined) || (file === null)) {
+      imgElement.src = this.imgSrcDefault;
+
+    } else {
+      imgElement.src = window.URL.createObjectURL(file);
+      imgElement.onload = () => {
+        URL.revokeObjectURL(imgElement.src);
+      };
+    }
   }
 
 }
